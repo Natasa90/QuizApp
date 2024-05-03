@@ -1,16 +1,16 @@
-/* 
-STEP 1: Create an array of objects with questions, answers and declare index for correct answer. 
-STEP 2: Declare variable for current question index - so the quiz would start from the 1. question and
-        declare variable for score that is goint to be displayed as user gives correct/wrong answers.   
-STEP 3: Make function for loading questions, with buttons - each one is going to be displayed as possible answer. 
-STEP 4: Create a function that will be called when some of the answer buttons is clicked on - to add correct answer point to the score and move to another question, or if the 
-        end is reached - show the final score. 
-STEP 5: Create a function that will display the final score if the end of questions is reached. 
+/*
+STEP 1. create array of objects with questions, asnwers and declare index for correct answer
+STEP 2. declare variable for current question index so quiz would start from the first question = 0 
+and declare variable for score that is going to be displayed = 0
+STEP 3. make function that will load questions
+STEP 4. creating a function that will be called when answer button is clicked
+STEP 5. creating funstion that will display final score at the end
 */
 
 
-// STEP 1
-const quizQuestions = [
+
+//STEP 1//
+const questions = [
     {
         question: "What is the name of the tallest mountain in the world?",
         answers: ["Mount Everest", "Makalu", "Broad Peak", "Sagarmatha"],
@@ -33,59 +33,56 @@ const quizQuestions = [
     }
 ];
 
-//STEP 2
-let currentQuestionIndex = 0; 
-let result = 0; 
+let currentQuestionIndex = 0;
+let score = 0;
 
-//STEP 3
-function loadQuestions () { 
 
-    let questionElement = document.getElementById("questions"); 
-    let answerElement = document.getElementById("answers"); 
+function loadQuestions(){
+    const questionElement = document.getElementById("question");
+    const answerElement = document.getElementById("answers");
 
-    answerElement.innerHTML = ""; 
+    answerElement.innerHTML = "";
 
-    const currentQuestion = quizQuestions[currentQuestionIndex]; // currentQuestion is the first object in quizQuestions array!
-    questionElement.textContent = currentQuestion.question; 
+    const currentQuestion = questions[currentQuestionIndex];//currentQuestion is the first object in array
+    questionElement.textContent = currentQuestion.question;
 
-    currentQuestion.answers.forEach((answer, index) => {
-        const button = document.createElement("button");   // creating button for each answer;  
-        button.className = "choice";     // creating class for buttons so we can style them in css; 
-        button.textContent = answer;     // creating text for each button out of element answer (in this case - currentQuestion.answers);   
-        button.addEventListener = ("click", () => selectChoice(index)); 
-        answerElement.appendChild(button); 
+    currentQuestion.answers.forEach((answer,index) => {
+        const button = document.createElement("button");//creating button for each answer
+        button.className = "answer";// creating class for this button
+        button.textContent = answer;//creating text for button which is text in object under "answers"
+        button.addEventListener("click", () => selectAnswer(index));// on button click we call function that takes index of selected answer
+        answerElement.appendChild(button);
     });
-}
+};
 
-function selectChoice (index) { 
-    const currentQuestion = quizQuestions[currentQuestionIndex]; 
-    
-    if (index === currentQuestion.correct) { 
-        result ++; 
+
+function selectAnswer(index){
+    const currentQuestion = questions[currentQuestionIndex];
+
+    if (index === currentQuestion.correct){ //if index is same to correct answer index from object
+        score++;
     }
 
-    currentQuestionIndex++;   // moving to another question; 
-
-    if (currentQuestionIndex < quizQuestions.length) { 
-        loadQuestions();    // if user hasn't reached the last question, repeat loadQuestions function - go to another question  
-    } else {
-        displayResult();   // new function 
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){//moving to next question
+        loadQuestions();
+    }else{
+    displayScore()//call function that will display score at the end, and will define this function below
     }
 }
-
-function displayResult () { 
-    const resultElement = document.getElementById("result");  
-    resultElement.textContent = `Your have reached the end of the quiz. Your final score is ${result}.`
+function displayScore(){
+    const scoreElement = document.getElementById("score");
+    scoreElement.textContent = `Your score is ${score} out of ${questions.length}.`;
 }
 
-document.getElementById("next-question").addEventListener("click", () => {
-    if (currentQuestionIndex < quizQuestions.length) { 
-        loadQuestions(); 
+const buttonNextQuestion = document.getElementById("nextQuestion");
+buttonNextQuestion.addEventListener("click", () =>{
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length){
+        loadQuestions();
+    } else { 
+        displayScore();
     }
-}); 
+});
 
-document.addEventListener("DOMContentLoaded", loadQuestions);  
-
-
-
-
+document.addEventListener("DOMContentLoaded", loadQuestions);
